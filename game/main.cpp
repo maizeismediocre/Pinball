@@ -8,8 +8,8 @@ int main(int argc, char* argv[])
 {
 	//app.DebugMemoryLeaks();
 	app.OpenConsole();
-	app.OpenWindow(800, 600, "Pinball");
-	app.OpenFullScreen(1920, 1080, 32);
+	app.OpenWindow(696, 871, "Pinball");
+	//app.OpenFullScreen(1920, 1080, 32);
 	
 	app.SetClearColor(CColor::Black());
 	cout << "FPS: " << app.GetFPS() << endl;

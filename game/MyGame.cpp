@@ -30,7 +30,7 @@ void CMyGame::OnDraw(CGraphics* g)
 {
 	// TODO: add drawing code here
 	rocket.Draw(g);
-
+	background.Draw(g);
 	*g << font(28) << color(CColor::Red()) << xy(10, 570) << GetTime()/1000;
 
 	
@@ -44,7 +44,8 @@ void CMyGame::OnInitialize()
 {
 	rocket.LoadImage("rocket.bmp", CColor::Blue());
 	rocket.SetImage("rocket.bmp");
-
+	background.LoadImage("background.bmp");
+	background.SetImage("background.bmp");
 }
 
 // called when a new game is requested (e.g. when F2 pressed)
@@ -58,7 +59,7 @@ void CMyGame::OnDisplayMenu()
 // as a second phase after a menu or a welcome screen
 void CMyGame::OnStartGame()
 {
-
+	background.SetPosition(350, 450);
 	rocket.SetPosition(400, 300);
 
 }
