@@ -5,8 +5,16 @@ class CMyGame : public CGame
 	// Define sprites and other instance variables here
 	CSprite rocket;
 	CSprite background;
-	
+	CSpriteList theWalls;
+	CSprite theMarble, launcher;
 
+	// variables for the game
+int score;
+int level;
+int lives;
+// member functions
+void KillMarble();
+void ballcollisions();
 public:
 	CMyGame(void);
 	~CMyGame(void);
