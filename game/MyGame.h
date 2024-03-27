@@ -6,19 +6,27 @@ class CMyGame : public CGame
 	CSprite rocket;
 	CSprite background;
 	CSpriteList theWalls;
-	CSprite theMarble, launcher;
+	CSprite theMarble, launcher, flipper_L, flipper_R;
+	CSpriteRect thePowerSlider, thePowerMarker;
 
 	// variables for the game
 int score;
 int level;
 int lives;
-// member functions
-void KillMarble();
-void ballcollisions();
+long m_bAimTime;
+
 public:
 	CMyGame(void);
 	~CMyGame(void);
-
+	// member functions
+	
+	void ballcollisions();
+	float GetShotPower();
+	void spawnMarble();
+	void beginAim();
+	bool isAiming();
+	
+	float Shoot();
 	// Per-Frame Callback Funtions (must be implemented!)
 	virtual void OnUpdate();
 	virtual void OnDraw(CGraphics* g);
