@@ -3,11 +3,20 @@
 class CMyGame : public CGame
 {
 	// Define sprites and other instance variables here
-	CSprite rocket;
+	
 	CSprite background;
 	CSpriteList theWalls;
+	CSpriteList theBumpers;
 	CSprite theMarble, launcher, flipper_L, flipper_R;
 	CSpriteRect thePowerSlider, thePowerMarker;
+	CSprite startscreen;
+	CSprite gameover;
+	CSprite startbutton;
+	CSprite quitbutton;
+	CSprite controlsbutton;
+	CSprite controls;
+	CSprite menubutton;
+	CSprite pausemenu;
 
 	// variables for the game
 int score;
@@ -25,6 +34,7 @@ public:
 	void spawnMarble();
 	void beginAim();
 	bool isAiming();
+	bool iscontrols;
 	
 	float Shoot();
 	// Per-Frame Callback Funtions (must be implemented!)
