@@ -220,30 +220,30 @@ void CMyGame::OnStartGame()
 
 void CMyGame::ballcollisions()
 {
-	Uint32 t = GetTime();
+	
 	Uint32 dt = GetDeltaTime();
 	
 	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
 	{
-		
-	
 
-			// gravity!
-		 theMarble.Accelerate(0, -GRAVITY);
+
+
+		// gravity!
+		theMarble.Accelerate(0, -GRAVITY);
 
 		//// TO DO: Test collisions with the walls
-		
+	
 		for each (CSprite * pWall in theWalls)
 		{
 			// r = radius of marble 
 			// Y = height / 2
 			// X = width / 2
-			float r = 10;
+			float r = theMarble.GetWidth() / 2;
 			float Y = pWall->GetHeight() / 2;
 			float X = pWall->GetWidth() / 2;
 			float alpha = pWall->GetRotation();
 			alpha = DEG2RAD(alpha);
-			CVector v = theMarble.GetVelocity() * dt / 500.f;
+			CVector v = theMarble.GetVelocity() * ((float)dt / 1000.f);
 			CVector t = pWall->GetPos() - theMarble.GetPos();
 			CVector n = CVector(sin(alpha), cos(alpha));
 			CVector m = CVector(-cos(alpha), sin(alpha));
@@ -327,12 +327,12 @@ void CMyGame::ballcollisions()
 
 		}
 		// collision for left flipper
-		float r = 10;
+		float r = theMarble.GetWidth() / 2;
 		float Y = flipper_L.GetHeight() / 2;
 		float X = flipper_L.GetWidth() / 2;
 		float alpha = flipper_L.GetRotation();
 		alpha = DEG2RAD(alpha);
-		CVector v = theMarble.GetVelocity() * dt / 1000.f;
+		CVector v = theMarble.GetVelocity() * ((float)dt / 1000.f);
 		CVector t = flipper_L.GetPos() - theMarble.GetPos();
 		CVector n = CVector(sin(alpha), cos(alpha));
 		CVector m = CVector(-cos(alpha), sin(alpha));
@@ -413,12 +413,12 @@ void CMyGame::ballcollisions()
 			}
 		}
 		// collision for right flipper
-		r = 10;
+		r = theMarble.GetWidth() / 2;
 		Y = flipper_R.GetHeight() / 2;
 		X = flipper_R.GetWidth() / 2;
 		alpha = flipper_R.GetRotation();
 		alpha = DEG2RAD(alpha);
-		v = theMarble.GetVelocity() * dt / 1000.f;
+		v = theMarble.GetVelocity() * ((float)dt / 1000.f);
 		t = flipper_R.GetPos() - theMarble.GetPos();
 		n = CVector(sin(alpha), cos(alpha));
 		m = CVector(-cos(alpha), sin(alpha));
@@ -495,7 +495,7 @@ void CMyGame::ballcollisions()
 			// Check collision within bounds
 			if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 			{
-				theMarble.SetVelocity(1.5 * Reflect(theMarble.GetVelocity(), m));
+				theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
 			}
 		}
 
@@ -530,12 +530,12 @@ void CMyGame::ballcollisions()
 			// r = radius of marble 
 			// Y = height / 2
 			// X = width / 2
-			float r = 10;
+			float r = theMarble.GetWidth() / 2;
 			float Y = pBouncer->GetHeight() / 2;
 			float X = pBouncer->GetWidth() / 2;
 			float alpha = pBouncer->GetRotation();
 			alpha = DEG2RAD(alpha);
-			CVector v = theMarble.GetVelocity() * dt / 500.f;
+			CVector v = theMarble.GetVelocity() * ((float)dt / 1000.f);
 			CVector t = pBouncer->GetPos() - theMarble.GetPos();
 			CVector n = CVector(sin(alpha), cos(alpha));
 			CVector m = CVector(-cos(alpha), sin(alpha));
@@ -625,6 +625,7 @@ void CMyGame::ballcollisions()
 
 		}
 	}
+	
 	
 }
 void CMyGame::beginAim()
@@ -873,7 +874,10 @@ void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 			{
 				// create the nozzle-rotated vector and shoot the marble!
 				CVector nozzle(95, 0);
-				shoot.Play("shoot.wav");
+				if (!IsMenuMode())
+				{
+					shoot.Play("shoot.wav");
+				}
 				launcher.LtoG(nozzle, true);
 				theMarble.SetPosition(nozzle);
 				theMarble.Accelerate(P * Normalize(CVector(0, 1)));
