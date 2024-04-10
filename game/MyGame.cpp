@@ -17,18 +17,18 @@ CMyGame::CMyGame(void) :
 	launcher.SetRotation(-90);
 	flipper_L.SetPosition(250, 40);
 	flipper_L.SetPivot(flipper_L.GetX() - 40, flipper_L.GetY());
-	flipper_L.SetRotation(45);
+	flipper_L.SetRotation(10);
 	flipper_R.SetPosition(400, 40);
 	flipper_R.SetPivot(flipper_R.GetX() + 40, flipper_R.GetY());
-	flipper_R.SetRotation(-45);
+	flipper_R.SetRotation(-10);
 	
 	
 	// TODO: add initialisation here
 	
 
 }
-#define MAX_POWER	1000
-#define MIN_POWER	200
+#define MAX_POWER	800
+#define MIN_POWER	500
 #define GRAVITY		5.f
 #define RESTITUTION	0.8f
 
@@ -42,9 +42,10 @@ CMyGame::~CMyGame(void)
 
 void CMyGame::OnUpdate()
 {
+	if (IsMenuMode() || IsGameOver()) return;
 	Uint32 t = GetTime();
 	ballcollisions();
-	
+	levelchange();
 	theMarble.Update(t);
 	launcher.Update(t);
 	flipper_L.Update(t);
@@ -53,6 +54,10 @@ void CMyGame::OnUpdate()
 	if (theMarble.IsDead())
 	{
 		spawnMarble();
+	}
+	if (lives == 0)
+	{
+		GameOver();
 	}
 }
 
@@ -63,7 +68,7 @@ void CMyGame::OnDraw(CGraphics* g)
 	{
 		if (iscontrols == false)
 		{
-		
+		ShowMouse();
 		startscreen.Draw(g);
 
 		startbutton.Draw(g);
@@ -81,8 +86,9 @@ void CMyGame::OnDraw(CGraphics* g)
 			menubutton.SetPosition(350, 200);
 		}
 	}
-	if (!IsMenuMode())
+	if (!IsMenuMode() && !IsPaused())
 	{
+		HideMouse();
 		background.Draw(g);
 		theMarble.Draw(g);
 		launcher.Draw(g);
@@ -96,6 +102,11 @@ void CMyGame::OnDraw(CGraphics* g)
 		{
 			pBumper->Draw(g);
 		}
+		for each (CSprite * pBouncer in theBouncers)
+		{
+			pBouncer->Draw(g);
+		}
+		
 		float y = (GetShotPower() - MIN_POWER) * thePowerSlider.GetHeight() / (MAX_POWER - MIN_POWER);
 		if (y < 0) y = 0;
 		if (theMarble.GetSpeed() == 0)
@@ -106,9 +117,16 @@ void CMyGame::OnDraw(CGraphics* g)
 			thePowerMarker.Draw(g);
 			thePowerSlider.Draw(g);
 		}
+		*g << font(16) << color(CColor::Green()) << xy(10, 845) << "level: " << level;
+		*g << font(16) << color(CColor::Green()) << xy(10, 820) << "score: " << score;
+		
+		*g << font(16) << color(CColor::Red()) << xy(250, 830) << "score to beat: " << scoretobeat;
+		*g << font(16) << color(CColor::Green()) << xy(10, 795) << "lives: " << lives;
+
 	}
 	if (!IsMenuMode() && IsPaused())
 	{
+		ShowMouse();
 		pausemenu.Draw(g);
 		pausemenu.SetPosition(350, 435);
 		quitbutton.Draw(g);
@@ -116,14 +134,29 @@ void CMyGame::OnDraw(CGraphics* g)
 		menubutton.Draw(g);
 		menubutton.SetPosition(350, 335);
 	}
-	if (IsGameOver())
+	if (IsGameOver() && !IsMenuMode() && isgamewon == false)
 	{
+		ShowMouse();
 		gameover.Draw(g);
 		gameover.SetPosition(350, 435);
 		quitbutton.Draw(g);
-		quitbutton.SetPosition(350, 235);
+		quitbutton.SetPosition(450, 200);
 		menubutton.Draw(g);
-		menubutton.SetPosition(350, 335);
+		menubutton.SetPosition(250, 200);
+		// score 
+		*g << font(30) << color(CColor::Green()) << xy(235, 300) << "your score: " << score;
+	}
+	if (IsGameOver() && isgamewon == true)
+	{
+		ShowMouse();
+		winscreen.Draw(g);
+		winscreen.SetPosition(350, 435);
+		quitbutton.Draw(g);
+		quitbutton.SetPosition(450, 200);
+		menubutton.Draw(g);
+		menubutton.SetPosition(250, 200);
+		// score 
+		*g << font(30) << color(CColor::Green()) << xy(235, 300) << "your score: " << score;
 	}
 	
 
@@ -154,30 +187,32 @@ void CMyGame::OnInitialize()
 	menubutton.SetImage("menu.bmp");
 	pausemenu.LoadImage("pausemenu.bmp");
 	pausemenu.SetImage("pausemenu.bmp");
-
+	winscreen.LoadImage("winscreen.bmp");
+	winscreen.SetImage("winscreen.bmp");
 	launcher.LoadImage("barrel.png");
     launcher.SetImage("barrel.png");
 	theMarble.LoadImage("marble.gif");
 	theMarble.SetImage("marble.gif");
-	flipper_L.LoadImage("flipper_l.bmp");
-	flipper_L.SetImage("flipper_l.bmp");
-	flipper_R.LoadImage("flipper_r.bmp");
-	flipper_R.SetImage("flipper_r.bmp");
+	flipper_L.LoadImage("flipper_l.bmp", CColor::Black());
+	flipper_L.SetImage("flipper_l.bmp", CColor::Black());
+	flipper_R.LoadImage("flipper_r.bmp", CColor::Black());
+	flipper_R.SetImage("flipper_r.bmp", CColor::Black());
 }
 
 // called when a new game is requested (e.g. when F2 pressed)
 // use this function to prepare a menu or a welcome screen
 void CMyGame::OnDisplayMenu()
 {
-	
+
 	startscreen.SetPosition(350, 435);
-		
+	music.Play("music.wav", -1);
 }
 
 // called when a new game is started
 // as a second phase after a menu or a welcome screen
 void CMyGame::OnStartGame()
 {
+	score = 0;
 	
 }
 
@@ -465,11 +500,7 @@ void CMyGame::ballcollisions()
 		}
 
 	}
-	if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
-	{
-		theMarble.Die(0);
-		lives--;
-	}
+	
 	for each (CSprite * pBumper in theBumpers)
 	{
 		
@@ -481,18 +512,119 @@ void CMyGame::ballcollisions()
 		
 		if (distance < (theMarble.GetWidth() / 2 + pBumper->GetWidth() / 2))
 		{
-			
+			bumpersound.Play("hit.wav");
 			CVector n = Normalize(d);
 			theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
 			
 			
 			// Increase the score
-			score += 100;
+			score += 10;
 		}
 	}
 
 	
+	for each (CSprite * pBouncer in theBouncers)
+	{
+		
+		{
+			// r = radius of marble 
+			// Y = height / 2
+			// X = width / 2
+			float r = 10;
+			float Y = pBouncer->GetHeight() / 2;
+			float X = pBouncer->GetWidth() / 2;
+			float alpha = pBouncer->GetRotation();
+			alpha = DEG2RAD(alpha);
+			CVector v = theMarble.GetVelocity() * dt / 500.f;
+			CVector t = pBouncer->GetPos() - theMarble.GetPos();
+			CVector n = CVector(sin(alpha), cos(alpha));
+			CVector m = CVector(-cos(alpha), sin(alpha));
+			if (Dot(v, n) < 0) // for the top side
+			{
+				// perpendicular component (oncoming)
+				float vy = Dot(v, n); // velocity component
+				CVector d = t + (Y + r) * n; // distance vector between edges
+				float dy = Dot(d, n); // perpendicular space inbetween
+				float f1 = dy / vy;
 
+				// parallel component (breadth control)
+				float vx = Cross(v, n); // velocity component 
+				float tx = Cross(t, n); // distance between centres
+				float f2 = (tx - vx * f1) / (X + r);
+				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
+				{
+					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
+					score += 10;
+					bumpersound.Play("hit.wav");
+				}
+
+			}
+			if (Dot(v, n) > 0) // for the bottom side
+			{
+				// perpendicular component (oncoming)
+				float vy = Dot(v, n); // velocity component
+				CVector d = t - (Y + r) * n; // distance vector between edges
+				float dy = Dot(d, n); // perpendicular space inbetween
+				float f1 = -dy / vy;
+
+				// parallel component (breadth control)
+				float vx = Cross(v, n); // velocity component 
+				float tx = Cross(t, n); // distance between centres
+				float f2 = (tx - vx * f1) / (X + r);
+
+				// Check collision within bounds
+				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
+				{
+					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
+					score += 10;
+					bumpersound.Play("hit.wav");
+				}
+			}
+			if (Dot(v, m) < 0) // for the left
+			{
+				// perpendicular component (oncoming)
+				float vy = Dot(v, m); // velocity component
+				CVector d = t + (X + r) * m; // distance vector between edges
+				float dy = Dot(d, m); // perpendicular space inbetween
+				float f1 = dy / vy;
+
+				// parallel component (breadth control)
+				float vx = Cross(v, m); // velocity component 
+				float tx = Cross(t, m); // distance between centres
+				float f2 = (tx - vx * f1) / (Y + r);
+				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
+				{
+					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
+					score += 10;
+					bumpersound.Play("hit.wav");
+				}
+
+			}
+			if (Dot(v, m) > 0)
+			{
+				// perpendicular component (oncoming)
+				float vy = Dot(v, m); // velocity component
+				CVector d = t - (X + r) * m; // distance vector between edges
+				float dy = Dot(d, m); // perpendicular space inbetween
+				float f1 = -dy / vy;
+
+				// parallel component (breadth control)
+				float vx = Cross(v, m); // velocity component 
+				float tx = Cross(t, m); // distance between centres
+				float f2 = (tx - vx * f1) / (Y + r);
+
+				// Check collision within bounds
+				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
+				{
+					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
+					score += 10;
+					bumpersound.Play("hit.wav");
+				}
+			}
+
+
+		}
+	}
 	
 }
 void CMyGame::beginAim()
@@ -520,6 +652,29 @@ void CMyGame::spawnMarble()
 	theMarble.SetOmega(0);
 	theMarble.SetPosition(launcher.GetPos());
 }
+void CMyGame::levelchange()
+{
+	if (score <= scoretobeat)
+	{
+		if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
+		{
+			theMarble.Die(0);
+			lives--;
+			loselife.Play("loselife.wav");
+		}
+	}
+	else if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
+	{
+		NewLevel();
+		nextlevel.Play("nextlevel.wav");
+	}
+		
+
+
+	
+	
+	
+}
 float CMyGame::Shoot()
 {
 	float f = GetShotPower();
@@ -530,8 +685,12 @@ float CMyGame::Shoot()
 // called when a new level started - first call for nLevel = 1
 void CMyGame::OnStartLevel(Sint16 nLevel)
 {
+	lives = 3;
+	level = nLevel;
 	theWalls.clear();
 	theBumpers.clear();
+	theBouncers.clear();
+	spawnMarble();
 	theWalls.push_back(new CSprite(CRectangle(665, 0, 10, 1000), "wallvert.bmp", CColor::Blue(), GetTime()));
 theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CColor::Blue(), GetTime()));
 	theWalls.push_back(new CSprite(CRectangle(615, 0, 10, 700), "wallvert.bmp", CColor::Blue(), GetTime()));
@@ -541,6 +700,16 @@ theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CCol
 	theWalls.back()->SetRotation(45);
 	theWalls.push_back(new CSprite(CRectangle(90, 700, 10, 190), "wallvert.bmp", CColor::Blue(), GetTime()));
 	theWalls.back()->SetRotation(43);
+	theWalls.push_back(new CSprite(CRectangle(470, 105, 100, 15), "wallhorz.bmp", CColor::Blue(), GetTime()));
+	theWalls.back()->SetRotation(-30);
+	theWalls.push_back(new CSprite(CRectangle(83, 105, 100, 15), "wallhorz.bmp", CColor::Blue(), GetTime()));
+	theWalls.back()->SetRotation(26);
+	theWalls.push_back(new CSprite(CRectangle(87, 135, 4, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
+	theWalls.push_back(new CSprite(CRectangle(560, 135, 4, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
+	theWalls.push_back(new CSprite(CRectangle(70, 30, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
+	theWalls.back()->SetRotation(-59);
+	theWalls.push_back(new CSprite(CRectangle(570, 30, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
+	theWalls.back()->SetRotation(59);
 	switch (nLevel)
 	{
 	case 0: // menu 
@@ -561,36 +730,66 @@ theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CCol
 		theBumpers.back()->SetSize(50, 50);
 		theBumpers.push_back(new CSprite(CVector(480, 180), "bumper-1.png", GetTime()));
 		theBumpers.back()->SetSize(50, 50);
+		// the bouncers 
+		theBouncers.push_back(new CSprite(CRectangle(585, 300, 10, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+		theBouncers.back()->SetRotation(32);
+		theBouncers.push_back(new CSprite(CRectangle(55, 300, 10, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+		theBouncers.back()->SetRotation(-32);
+
 		// the walls
 		theWalls.push_back(new CSprite(CRectangle(296, 738, 8, 35), "wallvert.bmp", CColor::Blue(), GetTime()));
 		theWalls.push_back(new CSprite(CRectangle(346, 738, 8, 35), "wallvert.bmp", CColor::Blue(), GetTime()));
 		
-		theWalls.push_back(new CSprite(CRectangle(585, 300, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(32);
-		theWalls.push_back(new CSprite(CRectangle(55, 300, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(-32);
-		theWalls.push_back(new CSprite(CRectangle(70, 30, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(-59);
-		theWalls.push_back(new CSprite(CRectangle(570, 30, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(59);
+		
+		
 		theWalls.push_back(new CSprite(CRectangle(460, 550, 150, 10), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->SetRotation(90);
 		theWalls.push_back(new CSprite(CRectangle(30, 550, 150, 10), "wallhorz.bmp", CColor::Blue(), GetTime()));
 		theWalls.back()->SetRotation(90);
-		theWalls.push_back(new CSprite(CRectangle(87, 135, 4, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(560, 135, 4, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
-		theWalls.push_back(new CSprite(CRectangle(470, 105, 100, 15), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(-30);
-		theWalls.push_back(new CSprite(CRectangle(83, 105, 100, 15), "wallhorz.bmp", CColor::Blue(), GetTime()));
-		theWalls.back()->SetRotation(26);
+		
+		// score to beat
+		scoretobeat = 150;
 		break;
+	case 2:
+		scoretobeat = score + 300;
+		// the bumpers
+		
+		
+		// the bouncers
+		
+		// the walls 
+		break;
+		case 3:
+			scoretobeat = score + 500;
+			// the bumpers
+			
+			// the bouncers
+			
+			// the walls
+			break;
+			case 4: 
+				isgamewon = true; 
+				GameOver();
+				break;
 	}
 }
 
 // called when the game is over
 void CMyGame::OnGameOver()
 {
+	if (isgamewon == false)
+	{
+		music.Stop();
+		gameoversound.Play("gameover.wav");
+	}
+	else
+	{
+		music.Stop();
+		win.Play("wincon.wav");
+	}
+	
 }
+
 
 // one time termination code
 void CMyGame::OnTerminate()
@@ -604,20 +803,40 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
 	if (sym == SDLK_F4 && (mod & (KMOD_LALT | KMOD_RALT)))
 		StopGame();
+
 	if (sym == SDLK_ESCAPE)
+	{
 		PauseGame();
+	}
+	if (sym == SDLK_ESCAPE && !IsPaused())
+	{
+		pause.Play("pause.wav");
+		
+	}
+	if (sym == SDLK_ESCAPE && IsPaused())
+	{
+		pause.Play("resume.wav");
+	}
+		
 	if (sym == SDLK_F2)
 		NewGame();
 	if (sym == SDLK_LEFT)
 	{
-		flipper_L.SetRotation(-10);
-		
+		flipper_L.SetRotation(45);
+		if (!IsMenuMode())
+		{
+			flipper.Play("flipper.wav");
+		}
 		
 
 	}
 	if (sym == SDLK_RIGHT)
 	{
-		flipper_R.SetRotation(10);
+		flipper_R.SetRotation(-45);
+		if (!IsMenuMode())
+		{
+			flipper.Play("flipper.wav");
+		}
 		
 
 	}
@@ -634,14 +853,14 @@ void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 	if (sym == SDLK_LEFT)
 	{
 		
-		flipper_L.SetRotation(45);
+		flipper_L.SetRotation(-10);
 		
 		
 
 	}
 	if (sym == SDLK_RIGHT)
 	{
-		flipper_R.SetRotation(-45);
+		flipper_R.SetRotation(10);
 		
 
 	}
@@ -654,6 +873,7 @@ void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 			{
 				// create the nozzle-rotated vector and shoot the marble!
 				CVector nozzle(95, 0);
+				shoot.Play("shoot.wav");
 				launcher.LtoG(nozzle, true);
 				theMarble.SetPosition(nozzle);
 				theMarble.Accelerate(P * Normalize(CVector(0, 1)));
@@ -680,6 +900,7 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 			if (startbutton.HitTest(x, y))
 			{
 				StartGame();
+				menusounds.Play("select.wav");
 			}
 			if (quitbutton.HitTest(x, y))
 			{
@@ -688,6 +909,7 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 			if (controlsbutton.HitTest(x, y))
 			{
 				iscontrols = true;
+				menusounds.Play("select.wav");
 			}
 		}
 		if (iscontrols == true)
@@ -695,6 +917,7 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 			if (menubutton.HitTest(x, y))
 			{
 				iscontrols = false;
+				menusounds.Play("exit.wav");
 			}
 		}
 
@@ -709,6 +932,19 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 		{
 			NewGame();
 			PauseGame();
+			menusounds.Play("exit.wav");
+		}
+	}
+	if (IsGameOver())
+	{
+		if (quitbutton.HitTest(x, y))
+		{
+			StopGame();
+		}
+		if (menubutton.HitTest(x, y))
+		{
+			NewGame();
+			menusounds.Play("exit.wav");
 		}
 	}
 	

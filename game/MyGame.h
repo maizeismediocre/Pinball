@@ -7,6 +7,7 @@ class CMyGame : public CGame
 	CSprite background;
 	CSpriteList theWalls;
 	CSpriteList theBumpers;
+	CSpriteList theBouncers;
 	CSprite theMarble, launcher, flipper_L, flipper_R;
 	CSpriteRect thePowerSlider, thePowerMarker;
 	CSprite startscreen;
@@ -17,11 +18,24 @@ class CMyGame : public CGame
 	CSprite controls;
 	CSprite menubutton;
 	CSprite pausemenu;
-
+	CSprite winscreen;
+	// sound
+	CSoundPlayer music;
+	CSoundPlayer bumpersound;
+	CSoundPlayer shoot;
+	CSoundPlayer nextlevel;
+	CSoundPlayer loselife;
+	CSoundPlayer gameoversound;
+	CSoundPlayer win;
+	CSoundPlayer flipper;
+	CSoundPlayer pause;
+	CSoundPlayer menusounds;
 	// variables for the game
 int score;
 int level;
 int lives;
+int scoretobeat;
+bool isgamewon;
 long m_bAimTime;
 
 public:
@@ -35,7 +49,7 @@ public:
 	void beginAim();
 	bool isAiming();
 	bool iscontrols;
-	
+	void levelchange();
 	float Shoot();
 	// Per-Frame Callback Funtions (must be implemented!)
 	virtual void OnUpdate();
