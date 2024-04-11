@@ -666,7 +666,10 @@ void CMyGame::ballmovement()
 
 		if (IsKeyDown(SDLK_UP) && bumpcooldown == 0 && bump != 0)
 		{
-			
+			if (!IsMenuMode())
+			{
+				boost.Play("bump.wav");
+			}
 			bumpcooldown = 50;
 			boosttimer = 50;
 			bump--;

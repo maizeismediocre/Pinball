@@ -30,6 +30,7 @@ class CMyGame : public CGame
 	CSoundPlayer flipper;
 	CSoundPlayer pause;
 	CSoundPlayer menusounds;
+	CSoundPlayer boost;
 	// variables for the game
 int score;
 int level;
