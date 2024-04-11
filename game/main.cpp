@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
 	//app.OpenFullScreen(1920, 1080, 32);
 	
 	app.SetClearColor(CColor::Black());
+	app.SetFPS(60);
 	cout << "FPS: " << app.GetFPS() << endl;
 	app.Run(&game);
 	return(0);

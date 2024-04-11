@@ -35,9 +35,12 @@ int score;
 int level;
 int lives;
 int scoretobeat;
+int bump;
+int bumpcooldown;
+int boosttimer;
 bool isgamewon;
 long m_bAimTime;
-
+bool iscontrols;
 public:
 	CMyGame(void);
 	~CMyGame(void);
@@ -48,7 +51,8 @@ public:
 	void spawnMarble();
 	void beginAim();
 	bool isAiming();
-	bool iscontrols;
+	void ballmovement();
+
 	void levelchange();
 	float Shoot();
 	// Per-Frame Callback Funtions (must be implemented!)

@@ -44,12 +44,17 @@ void CMyGame::OnUpdate()
 {
 	if (IsMenuMode() || IsGameOver()) return;
 	Uint32 t = GetTime();
-	ballcollisions();
+	
 	levelchange();
-	theMarble.Update(t);
+	
+	
 	launcher.Update(t);
 	flipper_L.Update(t);
 	flipper_R.Update(t);
+	ballcollisions();
+	ballmovement();
+	theMarble.Update(t);
+	
 	// TODO: add the game update code here
 	if (theMarble.IsDead())
 	{
@@ -58,6 +63,14 @@ void CMyGame::OnUpdate()
 	if (lives == 0)
 	{
 		GameOver();
+	}
+	if (bumpcooldown > 0)
+	{
+		bumpcooldown--;
+	}
+	if (boosttimer > 0)
+	{
+		boosttimer--;
 	}
 }
 
@@ -86,7 +99,7 @@ void CMyGame::OnDraw(CGraphics* g)
 			menubutton.SetPosition(350, 200);
 		}
 	}
-	if (!IsMenuMode() && !IsPaused())
+	if (!IsMenuMode() && !IsPaused() && !IsGameOver())
 	{
 		HideMouse();
 		background.Draw(g);
@@ -107,6 +120,7 @@ void CMyGame::OnDraw(CGraphics* g)
 			pBouncer->Draw(g);
 		}
 		
+		
 		float y = (GetShotPower() - MIN_POWER) * thePowerSlider.GetHeight() / (MAX_POWER - MIN_POWER);
 		if (y < 0) y = 0;
 		if (theMarble.GetSpeed() == 0)
@@ -122,7 +136,12 @@ void CMyGame::OnDraw(CGraphics* g)
 		
 		*g << font(16) << color(CColor::Red()) << xy(250, 830) << "score to beat: " << scoretobeat;
 		*g << font(16) << color(CColor::Green()) << xy(10, 795) << "lives: " << lives;
-
+		if (bumpcooldown == 0 && bump != 0)
+		{
+			*g << font(16) << color(CColor::Green()) << xy(250, 795) << "bump ready";
+		}
+		
+		
 	}
 	if (!IsMenuMode() && IsPaused())
 	{
@@ -229,7 +248,7 @@ void CMyGame::ballcollisions()
 
 
 		// gravity!
-		theMarble.Accelerate(0, -GRAVITY);
+		
 
 		//// TO DO: Test collisions with the walls
 	
@@ -637,6 +656,27 @@ bool CMyGame::isAiming()
 {
 	return m_bAimTime != 0;
 }
+void CMyGame::ballmovement()
+{
+	if (!theMarble.IsDead() && theMarble.GetSpeed() > 0)
+	{
+		
+		theMarble.Accelerate(0, -GRAVITY);
+
+		if (IsKeyDown(SDLK_UP) && bumpcooldown == 0 && bump != 0)
+		{
+			
+			bumpcooldown = 50;
+			boosttimer = 50;
+			bump--;
+		}
+		if (boosttimer != 0)
+		{
+			theMarble.Accelerate(0, 10);
+		}
+		
+	}
+}
 float CMyGame::GetShotPower()
 {
 	if (m_bAimTime == 0) return 0;
@@ -686,6 +726,7 @@ float CMyGame::Shoot()
 // called when a new level started - first call for nLevel = 1
 void CMyGame::OnStartLevel(Sint16 nLevel)
 {
+	bump = 3;
 	lives = 3;
 	level = nLevel;
 	theWalls.clear();
