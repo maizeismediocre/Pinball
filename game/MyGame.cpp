@@ -136,6 +136,7 @@ void CMyGame::OnDraw(CGraphics* g)
 		
 		*g << font(16) << color(CColor::Red()) << xy(250, 830) << "score to beat: " << scoretobeat;
 		*g << font(16) << color(CColor::Green()) << xy(10, 795) << "lives: " << lives;
+		*g << font(16) << color(CColor::Green()) << xy(10, 765) << "bumps left: " << bump;
 		if (bumpcooldown == 0 && bump != 0)
 		{
 			*g << font(16) << color(CColor::Green()) << xy(250, 795) << "bump ready";
@@ -247,10 +248,10 @@ void CMyGame::ballcollisions()
 
 
 
-		// gravity!
+		
 		
 
-		//// TO DO: Test collisions with the walls
+		
 	
 		for each (CSprite * pWall in theWalls)
 		{
