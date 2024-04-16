@@ -97,7 +97,7 @@ void CMyGame::OnDraw(CGraphics* g)
 			controls.Draw(g);
 			controls.SetPosition(350, 435);
 			menubutton.Draw(g);
-			menubutton.SetPosition(350, 200);
+			menubutton.SetPosition(500, 200);
 		}
 		if (isStory == true)
 		{
