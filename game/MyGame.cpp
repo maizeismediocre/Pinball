@@ -17,10 +17,10 @@ CMyGame::CMyGame(void) :
 	launcher.SetRotation(-90);
 	flipper_L.SetPosition(250, 40);
 	flipper_L.SetPivot(flipper_L.GetX() - 40, flipper_L.GetY());
-	flipper_L.SetRotation(10);
+	
 	flipper_R.SetPosition(400, 40);
 	flipper_R.SetPivot(flipper_R.GetX() + 40, flipper_R.GetY());
-	flipper_R.SetRotation(-10);
+	
 	
 	
 	// TODO: add initialisation here
@@ -80,7 +80,7 @@ void CMyGame::OnDraw(CGraphics* g)
 	// TODO: add drawing code here
 	if (IsMenuMode())
 	{
-		if (iscontrols == false)
+		if (iscontrols == false && isStory == false)
 		{
 		ShowMouse();
 		startscreen.Draw(g);
@@ -98,6 +98,15 @@ void CMyGame::OnDraw(CGraphics* g)
 			controls.SetPosition(350, 435);
 			menubutton.Draw(g);
 			menubutton.SetPosition(350, 200);
+		}
+		if (isStory == true)
+		{
+			storyscreen.Draw(g);
+			storyscreen.SetPosition(350, 435);
+			playbutton.Draw(g);
+			playbutton.SetPosition(350, 280);
+			menubutton.Draw(g);
+			menubutton.SetPosition(350, 180);
 		}
 	}
 	if (!IsMenuMode() && !IsPaused() && !IsGameOver())
@@ -198,6 +207,8 @@ void CMyGame::OnInitialize()
 	gameover.SetImage("Gameover.bmp");
 	startbutton.LoadImage("start.bmp");
 	startbutton.SetImage("start.bmp");
+	playbutton.LoadImage("play.bmp");
+	playbutton.SetImage("play.bmp");
 	quitbutton.LoadImage("quit.bmp");
 	quitbutton.SetImage("quit.bmp");
 	controlsbutton.LoadImage("controls.bmp");
@@ -210,6 +221,8 @@ void CMyGame::OnInitialize()
 	pausemenu.SetImage("pausemenu.bmp");
 	winscreen.LoadImage("winscreen.bmp");
 	winscreen.SetImage("winscreen.bmp");
+	storyscreen.LoadImage("story.bmp");
+	storyscreen.SetImage("story.bmp");
 	launcher.LoadImage("barrel.png");
     launcher.SetImage("barrel.png");
 	theMarble.LoadImage("marble.gif");
@@ -227,6 +240,8 @@ void CMyGame::OnDisplayMenu()
 
 	startscreen.SetPosition(350, 435);
 	music.Play("music.wav", -1);
+	iscontrols = false;
+	isStory = false;
 }
 
 // called when a new game is started
@@ -807,36 +822,146 @@ theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CCol
 		theWalls.back()->SetRotation(90);
 		
 		// score to beat
-		scoretobeat = 150;
+		scoretobeat = 100;
 		break;
 	case 2:
-		scoretobeat = score + 300;
+		scoretobeat = score + 150;
 		// the bumpers
+
+		theBumpers.push_back(new CSprite(CVector(331, 450), "bumper.png", GetTime()));
+		theBumpers.back()->SetSize(75, 75);
 		
+		theBumpers.push_back(new CSprite(CVector(331, 250), "bumper-1.png", GetTime()));
+		theBumpers.back()->SetSize(50, 50);
+
 		
 		// the bouncers
 		
+			theBouncers.push_back(new CSprite(CRectangle(185, 150, 15, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(-45);
+			theBouncers.push_back(new CSprite(CRectangle(475, 150, 15, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(45);
+			
+			theBouncers.push_back(new CSprite(CRectangle(172, 600, 10, 125), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(45);
+			
+			theBouncers.push_back(new CSprite(CRectangle(490, 600, 10, 125), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(-45);
+			
+theBouncers.push_back(new CSprite(CRectangle(231, 500, 10, 125), "bouncervert.bmp", CColor::Blue(), GetTime()));
+theBouncers.back()->SetRotation(45);
+
+theBouncers.push_back(new CSprite(CRectangle(431, 500, 10, 125), "bouncervert.bmp", CColor::Blue(), GetTime()));
+theBouncers.back()->SetRotation(-45);
+
 		// the walls 
+
+		theWalls.push_back(new CSprite(CRectangle(235, 300, 10, 125), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetRotation(-45);
+		theWalls.push_back(new CSprite(CRectangle(427, 300, 10, 125), "wallvert.bmp", CColor::Blue(), GetTime()));
+		theWalls.back()->SetRotation(45);
+		
+		theWalls.push_back(new CSprite(CRectangle(87, 200, 4, 500), "wallvert.bmp", CColor::Blue(), GetTime()));
+		
+		theWalls.push_back(new CSprite(CRectangle(560, 200, 4, 500), "wallvert.bmp", CColor::Blue(), GetTime()));
 		break;
 		case 3:
-			scoretobeat = score + 400;
+			scoretobeat = score + 250;
 			// the bumpers
 			
-			// the bouncers
+				theBumpers.push_back(new CSprite(CVector(331, 650), "bumper.png", GetTime()));
+			theBumpers.back()->SetSize(55, 55);
+			theBumpers.push_back(new CSprite(CVector(69, 400), "bumper-1.png", GetTime()));
+			theBumpers.back()->SetSize(55, 55);
+			theBumpers.push_back(new CSprite(CVector(586, 400), "bumper-1.png", GetTime()));
+			theBumpers.back()->SetSize(55, 55);
+			theBumpers.push_back(new CSprite(CVector(48, 600), "bumper.png", GetTime()));
+			theBumpers.push_back(new CSprite(CVector(600, 600), "bumper.png", GetTime()));
 			
+			theBumpers.push_back(new CSprite(CVector(350, 280), "bumper.png", GetTime()));
+			// the bouncers
+			theBouncers.push_back(new CSprite(CRectangle(250, 300, 200, 20), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+			// make two vertical bouncers slightly below and rotate them by 45 
+			theBouncers.push_back(new CSprite(CRectangle(280, 180, 20, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(45);
+			theBouncers.push_back(new CSprite(CRectangle(390, 180, 20, 100), "bouncervert.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(-45);
 			// the walls
+			
+			theWalls.push_back(new CSprite(CRectangle(88, 473, 8, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+			theWalls.back()->SetRotation(-55);
+		
+			theWalls.push_back(new CSprite(CRectangle(558, 473, 8, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+			theWalls.back()->SetRotation(55);
+
 			break;
 		case 4:
-			scoretobeat = score + 500;
+			scoretobeat = score + 300;
 			// the bumpers
+			
+			theBumpers.push_back(new CSprite(CVector(200, 500), "bumper-1.png", GetTime()));
+			theBumpers.back()->SetSize(75, 75);
+			
+			theBumpers.push_back(new CSprite(CVector(350, 500), "bumper-1.png", GetTime()));
+			theBumpers.back()->SetSize(75, 75);
+			theBumpers.push_back(new CSprite(CVector(500, 500), "bumper-1.png", GetTime()));
+			theBumpers.back()->SetSize(75, 75);
+			theBumpers.push_back(new CSprite(CVector(250, 360), "bumper.png", GetTime()));
+			theBumpers.back()->SetSize(55, 55);
+			theBumpers.push_back(new CSprite(CVector(430, 360), "bumper.png", GetTime()));
+			theBumpers.back()->SetSize(55, 55);
+
+			
 			// the bouncers
+			
+			theBouncers.push_back(new CSprite(CRectangle(220, 650, 250, 20), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+			theBouncers.push_back(new CSprite(CRectangle(220, 230, 250, 20), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+			theBouncers.push_back(new CSprite(CRectangle(463, 120, 100, 15), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(-30);
+			theBouncers.push_back(new CSprite(CRectangle(89, 120, 100, 15), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+			theBouncers.back()->SetRotation(26);
 			// the walls
+
+			theWalls.push_back(new CSprite(CRectangle(87, 200, 4, 500), "wallvert.bmp", CColor::Blue(), GetTime()));
+
+			theWalls.push_back(new CSprite(CRectangle(560, 200, 4, 500), "wallvert.bmp", CColor::Blue(), GetTime()));
+			theWalls.push_back(new CSprite(CRectangle(220, 646, 250, 4), "wallhorz.bmp", CColor::Blue(), GetTime()));
+			theWalls.push_back(new CSprite(CRectangle(220, 250, 250, 4), "wallhorz.bmp", CColor::Blue(), GetTime()));
+
 			break;
 			case 5:
-				scoretobeat = score + 600;
+				scoretobeat = score + 350;
 				// the bumpers
+				
+					theBumpers.push_back(new CSprite(CVector(331, 670), "bumper-1.png", GetTime()));
+				theBumpers.back()->SetSize(75, 75);
+				theBumpers.push_back(new CSprite(CVector(331, 230), "bumper.png", GetTime()));
+				theBumpers.back()->SetSize(75, 75);
+					theBumpers.push_back(new CSprite(CVector(49, 550), "bumper.png", GetTime()));
+					theBumpers.push_back(new CSprite(CVector(600, 550), "bumper.png", GetTime()));
+					theBumpers.push_back(new CSprite(CVector(49, 365), "bumper-1.png", GetTime()));
+					theBumpers.push_back(new CSprite(CVector(600, 365), "bumper-1.png", GetTime()));
 				// the bouncers
+				
+				theBouncers.push_back(new CSprite(CRectangle(240, 450, 200, 10), "bouncerhorz.bmp", CColor::Blue(), GetTime()));
+				theBouncers.push_back(new CSprite(CRectangle(70, 600, 10, 150), "bouncervert.bmp", CColor::Blue(), GetTime()));
+				
+				theBouncers.push_back(new CSprite(CRectangle(138, 210, 7, 150), "bouncervert.bmp", CColor::Blue(), GetTime()));
+				theBouncers.back()->SetRotation(45);
+				theBouncers.push_back(new CSprite(CRectangle(508, 210, 7, 150), "bouncervert.bmp", CColor::Blue(), GetTime()));
+				theBouncers.back()->SetRotation(-45);
+				
+				
 				// the walls
+				
+					theWalls.push_back(new CSprite(CRectangle(80, 480, 10, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+					theWalls.back()->SetRotation(-45);
+					theWalls.push_back(new CSprite(CRectangle(560, 480, 10, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+					theWalls.back()->SetRotation(45);
+					theWalls.push_back(new CSprite(CRectangle(80, 300, 10, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+					theWalls.back()->SetRotation(45);
+					theWalls.push_back(new CSprite(CRectangle(560, 300, 10, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
+					theWalls.back()->SetRotation(-45);
 				break;
 			case 6: 
 				isgamewon = true; 
@@ -924,14 +1049,14 @@ void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 	if (sym == SDLK_LEFT)
 	{
 		
-		flipper_L.SetRotation(-10);
+		flipper_L.SetRotation(0);
 		
 		
 
 	}
 	if (sym == SDLK_RIGHT)
 	{
-		flipper_R.SetRotation(10);
+		flipper_R.SetRotation(0);
 		
 
 	}
@@ -969,11 +1094,11 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 	
 	if (IsMenuMode())
 	{
-		if (iscontrols == false)
+		if (iscontrols == false && isStory == false)
 		{
 			if (startbutton.HitTest(x, y))
 			{
-				StartGame();
+				isStory = true;
 				menusounds.Play("select.wav");
 			}
 			if (quitbutton.HitTest(x, y))
@@ -992,6 +1117,19 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 			{
 				iscontrols = false;
 				menusounds.Play("exit.wav");
+			}
+		}
+		if (isStory == true)
+			{
+			if (menubutton.HitTest(x, y))
+			{
+				isStory = false;
+				menusounds.Play("exit.wav");
+			}
+			if (playbutton.HitTest(x, y))
+			{
+				StartGame();
+				menusounds.Play("select.wav");
 			}
 		}
 

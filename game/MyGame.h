@@ -17,8 +17,10 @@ class CMyGame : public CGame
 	CSprite controlsbutton;
 	CSprite controls;
 	CSprite menubutton;
+	CSprite playbutton;
 	CSprite pausemenu;
 	CSprite winscreen;
+	CSprite storyscreen;
 	// sound
 	CSoundPlayer music;
 	CSoundPlayer bumpersound;
@@ -42,6 +44,7 @@ int boosttimer;
 bool isgamewon;
 long m_bAimTime;
 bool iscontrols;
+bool isStory;
 public:
 	CMyGame(void);
 	~CMyGame(void);
