@@ -16,10 +16,10 @@ CMyGame::CMyGame(void) :
 	launcher.SetPosition(645, 30);
 	launcher.SetRotation(-90);
 	flipper_L.SetPosition(250, 40);
-	flipper_L.SetPivot(flipper_L.GetX() - 40, flipper_L.GetY());
-	
+	flipper_L.SetRotation(25);
+	flipper_R.SetRotation(-25);
 	flipper_R.SetPosition(400, 40);
-	flipper_R.SetPivot(flipper_R.GetX() + 40, flipper_R.GetY());
+	
 	
 	
 	
@@ -80,6 +80,7 @@ void CMyGame::OnDraw(CGraphics* g)
 	// TODO: add drawing code here
 	if (IsMenuMode())
 	{
+		//different parts of the menu
 		if (iscontrols == false && isStory == false)
 		{
 		ShowMouse();
@@ -164,6 +165,7 @@ void CMyGame::OnDraw(CGraphics* g)
 		menubutton.Draw(g);
 		menubutton.SetPosition(350, 335);
 	}
+	// different gameover condition screens
 	if (IsGameOver() && !IsMenuMode() && isgamewon == false)
 	{
 		ShowMouse();
@@ -693,6 +695,7 @@ void CMyGame::ballmovement()
 		{
 			theMarble.Accelerate(0, 10);
 		}
+		// Limit the speed of the ball
 		float maxSpeed = 900.0f; 
 
 		
@@ -719,6 +722,7 @@ float CMyGame::GetShotPower()
 }
 void CMyGame::spawnMarble()
 {
+	//reset the ball
 	theMarble.UnDie();
 	theMarble.UnDelete();
 	theMarble.SetVelocity(0, 0);
@@ -727,6 +731,7 @@ void CMyGame::spawnMarble()
 }
 void CMyGame::levelchange()
 {
+	// level change condition 
 	if (score < scoretobeat)
 	{
 		if (theMarble.GetRight() < 0 || theMarble.GetLeft() > GetWidth() || theMarble.GetTop() < 0)
@@ -750,6 +755,7 @@ void CMyGame::levelchange()
 }
 float CMyGame::Shoot()
 {
+	// code for applying power to the ball
 	float f = GetShotPower();
 	m_bAimTime = 0;
 	
@@ -784,6 +790,7 @@ theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CCol
 	theWalls.back()->SetRotation(-59);
 	theWalls.push_back(new CSprite(CRectangle(570, 30, 10, 100), "wallvert.bmp", CColor::Blue(), GetTime()));
 	theWalls.back()->SetRotation(59);
+	// level set up
 	switch (nLevel)
 	{
 	case 0: // menu 
@@ -824,7 +831,7 @@ theWalls.push_back(new CSprite(CRectangle(27, 0, 10, 1000), "wallvert.bmp", CCol
 		// score to beat
 		scoretobeat = 100;
 		break;
-	case 2:
+	case 2: // level 2
 		scoretobeat = score + 150;
 		// the bumpers
 
@@ -865,7 +872,7 @@ theBouncers.back()->SetRotation(-45);
 		
 		theWalls.push_back(new CSprite(CRectangle(560, 200, 4, 500), "wallvert.bmp", CColor::Blue(), GetTime()));
 		break;
-		case 3:
+		case 3: // level 3
 			scoretobeat = score + 250;
 			// the bumpers
 			
@@ -895,7 +902,7 @@ theBouncers.back()->SetRotation(-45);
 			theWalls.back()->SetRotation(55);
 
 			break;
-		case 4:
+		case 4: // level 4
 			scoretobeat = score + 300;
 			// the bumpers
 			
@@ -929,7 +936,7 @@ theBouncers.back()->SetRotation(-45);
 			theWalls.push_back(new CSprite(CRectangle(220, 250, 250, 4), "wallhorz.bmp", CColor::Blue(), GetTime()));
 
 			break;
-			case 5:
+			case 5: // level 5
 				scoretobeat = score + 350;
 				// the bumpers
 				
@@ -963,7 +970,7 @@ theBouncers.back()->SetRotation(-45);
 					theWalls.push_back(new CSprite(CRectangle(560, 300, 10, 150), "wallvert.bmp", CColor::Blue(), GetTime()));
 					theWalls.back()->SetRotation(-45);
 				break;
-			case 6: 
+			case 6: // end of the game
 				isgamewon = true; 
 				GameOver();
 				break;
@@ -1016,9 +1023,10 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		
 	if (sym == SDLK_F2)
 		NewGame();
+	//flipper controls
 	if (sym == SDLK_LEFT)
 	{
-		flipper_L.SetRotation(45);
+		flipper_L.SetRotation(-25);
 		if (!IsMenuMode())
 		{
 			flipper.Play("flipper.wav");
@@ -1028,13 +1036,13 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 	}
 	if (sym == SDLK_RIGHT)
 	{
-		flipper_R.SetRotation(-45);
+		flipper_R.SetRotation(25);
 		if (!IsMenuMode())
 		{
 			flipper.Play("flipper.wav");
 		}
 		
-
+		// launcher controls
 	}
 	if (sym == SDLK_SPACE)
 	{
@@ -1046,20 +1054,22 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 
 void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
+	// flipper controls
 	if (sym == SDLK_LEFT)
 	{
 		
-		flipper_L.SetRotation(0);
+		flipper_L.SetRotation(25);
 		
 		
 
 	}
 	if (sym == SDLK_RIGHT)
 	{
-		flipper_R.SetRotation(0);
+		flipper_R.SetRotation(-25);
 		
 
 	}
+	// launcher controls
 	if (sym == SDLK_SPACE)
 	{
 		if (isAiming())
@@ -1091,7 +1101,7 @@ void CMyGame::OnMouseMove(Uint16 x,Uint16 y,Sint16 relx,Sint16 rely,bool bLeft,b
 
 void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 {
-	
+	// menu buttons
 	if (IsMenuMode())
 	{
 		if (iscontrols == false && isStory == false)
