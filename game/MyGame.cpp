@@ -29,7 +29,7 @@ CMyGame::CMyGame(void) :
 }
 #define MAX_POWER	1800
 #define MIN_POWER	1000
-#define GRAVITY		3.f
+#define GRAVITY		4.f
 #define RESTITUTION	0.8f
 
 
