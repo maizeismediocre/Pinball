@@ -51,6 +51,9 @@ public:
 	// member functions
 	
 	void ballcollisions();
+	void flippercollision();
+	void bumpercollision();
+	void bouncercollision();
 	float GetShotPower();
 	void spawnMarble();
 	void beginAim();
