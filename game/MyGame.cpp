@@ -271,9 +271,7 @@ void CMyGame::ballcollisions()
 
 		for each (CSprite * pWall in theWalls)
 		{
-			// r = radius of marble 
-			// Y = height / 2
-			// X = width / 2
+			
 			float r = theMarble.GetWidth() / 2;
 			float Y = pWall->GetHeight() / 2;
 			float X = pWall->GetWidth() / 2;
@@ -323,7 +321,7 @@ void CMyGame::ballcollisions()
 					theMarble.SetVelocity(RESTITUTION * Reflect(theMarble.GetVelocity(), n));
 				}
 			}
-			if (Dot(v, m) < 0) // for the left
+			if (Dot(v, m) < 0) // for the left side
 			{
 				// perpendicular component (oncoming)
 				float vy = Dot(v, m); // velocity component
@@ -342,7 +340,7 @@ void CMyGame::ballcollisions()
 				}
 
 			}
-			if (Dot(v, m) > 0) // for the right
+			if (Dot(v, m) > 0) // for the right side
 			{
 				// perpendicular component (oncoming)
 				float vy = Dot(v, m); // velocity component
@@ -429,7 +427,7 @@ void CMyGame::flipperLcollision()
 				theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
 			}
 		}
-		if (Dot(v, m) < 0) // for the left
+		if (Dot(v, m) < 0) // for the left side
 		{
 			// perpendicular component (oncoming)
 			float vy = Dot(v, m); // velocity component
@@ -448,7 +446,7 @@ void CMyGame::flipperLcollision()
 			}
 
 		}
-		if (Dot(v, m) > 0)
+		if (Dot(v, m) > 0) // for the right side
 		{
 			// perpendicular component (oncoming)
 			float vy = Dot(v, m); // velocity component
@@ -521,7 +519,7 @@ void CMyGame::flipperRcollision()
 			theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
 		}
 	}
-	if (Dot(v, m) < 0) // for the left
+	if (Dot(v, m) < 0) // for the left side
 	{
 		// perpendicular component (oncoming)
 		float vy = Dot(v, m); // velocity component
@@ -540,7 +538,7 @@ void CMyGame::flipperRcollision()
 		}
 
 	}
-	if (Dot(v, m) > 0)
+	if (Dot(v, m) > 0) // for the right side
 	{
 		// perpendicular component (oncoming)
 		float vy = Dot(v, m); // velocity component
@@ -577,9 +575,10 @@ void CMyGame::bumpercollision()
 
 				// Reflect the marble's velocity
 				CVector n = Normalize(d);
-				theMarble.SetVelocity(2 * Reflect(theMarble.GetVelocity(), n));
-
+				theMarble.SetVelocity(1.6 * Reflect(theMarble.GetVelocity(), n));
+				// measure to reduce the ball sticking to the bumper
 				// Move the marble outside the bumper
+				
 				float overlap = (r + R) - d.Length();
 				theMarble.SetPos(theMarble.GetPos() + overlap * n);
 			}
@@ -594,9 +593,7 @@ void CMyGame::bouncercollision()
 	{
 
 		{
-			// r = radius of marble 
-			// Y = height / 2
-			// X = width / 2
+			
 			float r = theMarble.GetWidth() / 2;
 			float Y = pBouncer->GetHeight() / 2;
 			float X = pBouncer->GetWidth() / 2;
@@ -647,7 +644,7 @@ void CMyGame::bouncercollision()
 					bumpersound.Play("hit.wav");
 				}
 			}
-			if (Dot(v, m) < 0) // for the left
+			if (Dot(v, m) < 0) // for the left side
 			{
 				// perpendicular component (oncoming)
 				float vy = Dot(v, m); // velocity component
@@ -667,7 +664,7 @@ void CMyGame::bouncercollision()
 				}
 
 			}
-			if (Dot(v, m) > 0)
+			if (Dot(v, m) > 0) // for the right side
 			{
 				// perpendicular component (oncoming)
 				float vy = Dot(v, m); // velocity component
