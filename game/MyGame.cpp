@@ -554,27 +554,29 @@ void CMyGame::flippercollision()
 }
 void CMyGame::bumpercollision()
 {
-    for each (CSprite * pBumper in theBumpers)
-    {
-        float r = theMarble.GetWidth() / 2;
-        float R = pBumper->GetWidth() / 2;
-        CVector d = theMarble.GetPos() - pBumper->GetPos();
-        CVector n = Normalize(d);
-		// to reduce sticking
-        float overlap = (r + R) - d.Length();
+	
+		for each (CSprite * pBumper in theBumpers)
+		{
+			float r = theMarble.GetWidth() / 2;
+			float R = pBumper->GetWidth() / 2;
+			CVector d = theMarble.GetPos() - pBumper->GetPos();
 
-        if (overlap > 0) // collision detected
-        {
-            score += 10;
-            bumpersound.Play("hit.wav");
+			if (d.Length() < r + R) // collision detected
+			{
+				score += 10;
+				bumpersound.Play("hit.wav");
 
-            // Reflect the marble's velocity
-            theMarble.SetVelocity(2 * Reflect(theMarble.GetVelocity(), n));
+				// Reflect the marble's velocity
+				CVector n = Normalize(d);
+				theMarble.SetVelocity(2 * Reflect(theMarble.GetVelocity(), n));
 
-            // Move the marble outside the bumper
-            theMarble.SetPos(theMarble.GetPos() + overlap * n);
-        }
-    }
+				// Move the marble outside the bumper
+				float overlap = (r + R) - d.Length();
+				theMarble.SetPos(theMarble.GetPos() + overlap * n);
+			}
+		}
+	
+
 }
 void CMyGame::bouncercollision()
 {
