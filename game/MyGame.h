@@ -51,7 +51,9 @@ public:
 	// member functions
 	
 	void ballcollisions();
-	void flippercollision();
+	void flipperLcollision();
+	void flipperRcollision();
+
 	void bumpercollision();
 	void bouncercollision();
 	float GetShotPower();
