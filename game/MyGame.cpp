@@ -538,21 +538,18 @@ void CMyGame::ballcollisions()
 		for each (CSprite * pBumper in theBumpers)
 		{
 
+			float r = theMarble.GetWidth() / 2;
+			float R = pBumper->GetWidth() / 2; 
 			CVector d = pBumper->GetPos() - theMarble.GetPos();
-
 
 			float distance = d.Length();
 
-
-			if (distance < (theMarble.GetWidth() / 2 + pBumper->GetWidth() / 2))
+			if (distance < (r + R)) // collision detected
 			{
+				score += 10;
 				bumpersound.Play("hit.wav");
 				CVector n = Normalize(d);
 				theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
-
-
-				// Increase the score
-				score += 10;
 			}
 		}
 
