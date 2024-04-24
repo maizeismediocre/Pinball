@@ -935,9 +935,9 @@ theBouncers.back()->SetRotation(-45);
 			theBumpers.push_back(new CSprite(CVector(200, 500), "bumper-1.png", GetTime()));
 			theBumpers.back()->SetSize(75, 75);
 			
-			theBumpers.push_back(new CSprite(CVector(350, 500), "bumper-1.png", GetTime()));
+			theBumpers.push_back(new CSprite(CVector(335, 500), "bumper-1.png", GetTime()));
 			theBumpers.back()->SetSize(75, 75);
-			theBumpers.push_back(new CSprite(CVector(500, 500), "bumper-1.png", GetTime()));
+			theBumpers.push_back(new CSprite(CVector(470, 500), "bumper-1.png", GetTime()));
 			theBumpers.back()->SetSize(75, 75);
 			theBumpers.push_back(new CSprite(CVector(250, 360), "bumper.png", GetTime()));
 			theBumpers.back()->SetSize(55, 55);
