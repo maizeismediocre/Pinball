@@ -385,7 +385,7 @@ void CMyGame::flippercollision()
 	float X = flipper_L.GetWidth() / 2;
 	float alpha = flipper_L.GetRotation();
 	alpha = DEG2RAD(alpha);
-	CVector v = theMarble.GetVelocity() * ((float)dt / 1000.f);
+	CVector v = theMarble.GetVelocity() * ((float)dt / 500.f);
 	CVector t = flipper_L.GetPos() - theMarble.GetPos();
 	CVector n = CVector(sin(alpha), cos(alpha));
 	CVector m = CVector(-cos(alpha), sin(alpha));
@@ -471,7 +471,7 @@ void CMyGame::flippercollision()
 	X = flipper_R.GetWidth() / 2;
 	alpha = flipper_R.GetRotation();
 	alpha = DEG2RAD(alpha);
-	v = theMarble.GetVelocity() * ((float)dt / 1000.f);
+	v = theMarble.GetVelocity() * ((float)dt / 500.f);
 	t = flipper_R.GetPos() - theMarble.GetPos();
 	n = CVector(sin(alpha), cos(alpha));
 	m = CVector(-cos(alpha), sin(alpha));
@@ -554,25 +554,27 @@ void CMyGame::flippercollision()
 }
 void CMyGame::bumpercollision()
 {
-	for each (CSprite * pBumper in theBumpers)
-	{
+    for each (CSprite * pBumper in theBumpers)
+    {
+        float r = theMarble.GetWidth() / 2;
+        float R = pBumper->GetWidth() / 2;
+        CVector d = theMarble.GetPos() - pBumper->GetPos();
+        CVector n = Normalize(d);
+		// to reduce sticking
+        float overlap = (r + R) - d.Length();
 
-		float r = theMarble.GetWidth() / 2;
-		float R = pBumper->GetWidth() / 2;
-		CVector d = pBumper->GetPos() - theMarble.GetPos();
+        if (overlap > 0) // collision detected
+        {
+            score += 10;
+            bumpersound.Play("hit.wav");
 
+            // Reflect the marble's velocity
+            theMarble.SetVelocity(2 * Reflect(theMarble.GetVelocity(), n));
 
-		
-
-		if (d.Length() <= (r + R)) // collision detected
-		{
-			score += 10;
-			bumpersound.Play("hit.wav");
-			CVector n = Normalize(d);
-			theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
-			
-		}
-	}
+            // Move the marble outside the bumper
+            theMarble.SetPos(theMarble.GetPos() + overlap * n);
+        }
+    }
 }
 void CMyGame::bouncercollision()
 {
