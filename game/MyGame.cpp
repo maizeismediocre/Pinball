@@ -272,12 +272,12 @@ void CMyGame::ballcollisions()
 		for each (CSprite * pWall in theWalls)
 		{
 			
-			float r = theMarble.GetWidth() / 2;
-			float Y = pWall->GetHeight() / 2;
-			float X = pWall->GetWidth() / 2;
-			float alpha = pWall->GetRotation();
+			double r = theMarble.GetWidth() / 2.0;
+			double Y = pWall->GetHeight() / 2.0;
+			double X = pWall->GetWidth() / 2.0;
+			double alpha = pWall->GetRotation();
 			alpha = DEG2RAD(alpha);
-			CVector v = theMarble.GetVelocity() * ((float)dt / 500.f);
+			CVector v = theMarble.GetVelocity() * ((double)dt / 500.f);
 
 
 			CVector t = pWall->GetPos() - theMarble.GetPos();
@@ -286,15 +286,15 @@ void CMyGame::ballcollisions()
 			if (Dot(v, n) < 0) // for the top side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, n); // velocity component
+				double vy = Dot(v, n); // velocity component
 				CVector d = t + (Y + r) * n; // distance vector between edges
-				float dy = Dot(d, n); // perpendicular space inbetween
-				float f1 = dy / vy;
+				double dy = Dot(d, n); // perpendicular space inbetween
+				double f1 = dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, n); // velocity component 
-				float tx = Cross(t, n); // distance between centres
-				float f2 = (tx - vx * f1) / (X + r);
+				double vx = Cross(v, n); // velocity component 
+				double tx = Cross(t, n); // distance between centres
+				double f2 = (tx - vx * f1) / (X + r);
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 				{
 					theMarble.SetVelocity(RESTITUTION * Reflect(theMarble.GetVelocity(), n));
@@ -305,15 +305,15 @@ void CMyGame::ballcollisions()
 			if (Dot(v, n) > 0) // for the bottom side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, n); // velocity component
+				double vy = Dot(v, n); // velocity component
 				CVector d = t - (Y + r) * n; // distance vector between edges
-				float dy = Dot(d, n); // perpendicular space inbetween
-				float f1 = -dy / vy;
+				double dy = Dot(d, n); // perpendicular space inbetween
+				double f1 = -dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, n); // velocity component 
-				float tx = Cross(t, n); // distance between centres
-				float f2 = (tx - vx * f1) / (X + r);
+				double vx = Cross(v, n); // velocity component 
+				double tx = Cross(t, n); // distance between centres
+				double f2 = (tx - vx * f1) / (X + r);
 
 				// Check collision within bounds
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -324,15 +324,15 @@ void CMyGame::ballcollisions()
 			if (Dot(v, m) < 0) // for the left side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, m); // velocity component
+				double vy = Dot(v, m); // velocity component
 				CVector d = t + (X + r) * m; // distance vector between edges
-				float dy = Dot(d, m); // perpendicular space inbetween
-				float f1 = dy / vy;
+				double dy = Dot(d, m); // perpendicular space inbetween
+				double f1 = dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, m); // velocity component 
-				float tx = Cross(t, m); // distance between centres
-				float f2 = (tx - vx * f1) / (Y + r);
+				double vx = Cross(v, m); // velocity component 
+				double tx = Cross(t, m); // distance between centres
+				double f2 = (tx - vx * f1) / (Y + r);
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 				{
 					theMarble.SetVelocity(RESTITUTION * Reflect(theMarble.GetVelocity(), m));
@@ -343,15 +343,15 @@ void CMyGame::ballcollisions()
 			if (Dot(v, m) > 0) // for the right side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, m); // velocity component
+				double vy = Dot(v, m); // velocity component
 				CVector d = t - (X + r) * m; // distance vector between edges
-				float dy = Dot(d, m); // perpendicular space inbetween
-				float f1 = -dy / vy;
+				double dy = Dot(d, m); // perpendicular space inbetween
+				double f1 = -dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, m); // velocity component 
-				float tx = Cross(t, m); // distance between centres
-				float f2 = (tx - vx * f1) / (Y + r);
+				double vx = Cross(v, m); // velocity component 
+				double tx = Cross(t, m); // distance between centres
+				double f2 = (tx - vx * f1) / (Y + r);
 
 				// Check collision within bounds
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -380,27 +380,27 @@ void CMyGame::flipperLcollision()
 	
 		Uint32 dt = GetDeltaTime();
 		// collision for left flipper
-		float r = theMarble.GetWidth() / 2;
-		float Y = flipper_L.GetHeight() / 2;
-		float X = flipper_L.GetWidth() / 2;
-		float alpha = flipper_L.GetRotation();
+		double r = theMarble.GetWidth() / 2.0;
+		double Y = flipper_L.GetHeight() / 2.0;
+		double X = flipper_L.GetWidth() / 2.0;
+		double alpha = flipper_L.GetRotation();
 		alpha = DEG2RAD(alpha);
-		CVector v = theMarble.GetVelocity() * ((float)dt / 500.f);
+		CVector v = theMarble.GetVelocity() * ((double)dt / 500.f);
 		CVector t = flipper_L.GetPos() - theMarble.GetPos();
 		CVector n = CVector(sin(alpha), cos(alpha));
 		CVector m = CVector(-cos(alpha), sin(alpha));
 		if (Dot(v, n) < 0) // for the top side
 		{
 			// perpendicular component (oncoming)
-			float vy = Dot(v, n); // velocity component
+			double vy = Dot(v, n); // velocity component
 			CVector d = t + (Y + r) * n; // distance vector between edges
-			float dy = Dot(d, n); // perpendicular space inbetween
-			float f1 = dy / vy;
+			double dy = Dot(d, n); // perpendicular space inbetween
+			double f1 = dy / vy;
 
 			// parallel component (breadth control)
-			float vx = Cross(v, n); // velocity component 
-			float tx = Cross(t, n); // distance between centres
-			float f2 = (tx - vx * f1) / (X + r);
+			double vx = Cross(v, n); // velocity component 
+			double tx = Cross(t, n); // distance between centres
+			double f2 = (tx - vx * f1) / (X + r);
 			if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 			{
 				theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
@@ -411,15 +411,15 @@ void CMyGame::flipperLcollision()
 		if (Dot(v, n) > 0) // for the bottom side
 		{
 			// perpendicular component (oncoming)
-			float vy = Dot(v, n); // velocity component
+			double vy = Dot(v, n); // velocity component
 			CVector d = t - (Y + r) * n; // distance vector between edges
-			float dy = Dot(d, n); // perpendicular space inbetween
-			float f1 = -dy / vy;
+			double dy = Dot(d, n); // perpendicular space inbetween
+			double f1 = -dy / vy;
 
 			// parallel component (breadth control)
-			float vx = Cross(v, n); // velocity component 
-			float tx = Cross(t, n); // distance between centres
-			float f2 = (tx - vx * f1) / (X + r);
+			double vx = Cross(v, n); // velocity component 
+			double tx = Cross(t, n); // distance between centres
+			double f2 = (tx - vx * f1) / (X + r);
 
 			// Check collision within bounds
 			if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -430,15 +430,15 @@ void CMyGame::flipperLcollision()
 		if (Dot(v, m) < 0) // for the left side
 		{
 			// perpendicular component (oncoming)
-			float vy = Dot(v, m); // velocity component
+			double vy = Dot(v, m); // velocity component
 			CVector d = t + (X + r) * m; // distance vector between edges
-			float dy = Dot(d, m); // perpendicular space inbetween
-			float f1 = dy / vy;
+			double dy = Dot(d, m); // perpendicular space inbetween
+			double f1 = dy / vy;
 
 			// parallel component (breadth control)
-			float vx = Cross(v, m); // velocity component 
-			float tx = Cross(t, m); // distance between centres
-			float f2 = (tx - vx * f1) / (Y + r);
+			double vx = Cross(v, m); // velocity component 
+			double tx = Cross(t, m); // distance between centres
+			double f2 = (tx - vx * f1) / (Y + r);
 			if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 			{
 				theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
@@ -449,15 +449,15 @@ void CMyGame::flipperLcollision()
 		if (Dot(v, m) > 0) // for the right side
 		{
 			// perpendicular component (oncoming)
-			float vy = Dot(v, m); // velocity component
+			double vy = Dot(v, m); // velocity component
 			CVector d = t - (X + r) * m; // distance vector between edges
-			float dy = Dot(d, m); // perpendicular space inbetween
-			float f1 = -dy / vy;
+			double dy = Dot(d, m); // perpendicular space inbetween
+			double f1 = -dy / vy;
 
 			// parallel component (breadth control)
-			float vx = Cross(v, m); // velocity component 
-			float tx = Cross(t, m); // distance between centres
-			float f2 = (tx - vx * f1) / (Y + r);
+			double vx = Cross(v, m); // velocity component 
+			double tx = Cross(t, m); // distance between centres
+			double f2 = (tx - vx * f1) / (Y + r);
 
 			// Check collision within bounds
 			if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -472,27 +472,27 @@ void CMyGame::flipperRcollision()
 {
 	Uint32 dt = GetDeltaTime();
 	// collision for right flipper
-	float r = theMarble.GetWidth() / 2;
-	float Y = flipper_R.GetHeight() / 2;
-	float X = flipper_R.GetWidth() / 2;
-	float alpha = flipper_R.GetRotation();
+	double r = theMarble.GetWidth() / 2.0;
+	double Y = flipper_R.GetHeight() / 2.0;
+	double X = flipper_R.GetWidth() / 2.0;
+	double alpha = flipper_R.GetRotation();
 	alpha = DEG2RAD(alpha);
-	CVector v = theMarble.GetVelocity() * ((float)dt / 500.f);
+	CVector v = theMarble.GetVelocity() * ((double)dt / 500.f);
 	CVector t = flipper_R.GetPos() - theMarble.GetPos();
 	CVector n = CVector(sin(alpha), cos(alpha));
 	CVector m = CVector(-cos(alpha), sin(alpha));
 	if (Dot(v, n) < 0) // for the top side
 	{
 		// perpendicular component (oncoming)
-		float vy = Dot(v, n); // velocity component
+		double vy = Dot(v, n); // velocity component
 		CVector d = t + (Y + r) * n; // distance vector between edges
-		float dy = Dot(d, n); // perpendicular space inbetween
-		float f1 = dy / vy;
+		double dy = Dot(d, n); // perpendicular space inbetween
+		double f1 = dy / vy;
 
 		// parallel component (breadth control)
-		float vx = Cross(v, n); // velocity component 
-		float tx = Cross(t, n); // distance between centres
-		float f2 = (tx - vx * f1) / (X + r);
+		double vx = Cross(v, n); // velocity component 
+		double tx = Cross(t, n); // distance between centres
+		double f2 = (tx - vx * f1) / (X + r);
 		if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 		{
 			theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
@@ -503,15 +503,15 @@ void CMyGame::flipperRcollision()
 	if (Dot(v, n) > 0) // for the bottom side
 	{
 		// perpendicular component (oncoming)
-		float vy = Dot(v, n); // velocity component
+		double vy = Dot(v, n); // velocity component
 		CVector d = t - (Y + r) * n; // distance vector between edges
-		float dy = Dot(d, n); // perpendicular space inbetween
-		float f1 = -dy / vy;
+		double dy = Dot(d, n); // perpendicular space inbetween
+		double f1 = -dy / vy;
 
 		// parallel component (breadth control)
-		float vx = Cross(v, n); // velocity component 
-		float tx = Cross(t, n); // distance between centres
-		float f2 = (tx - vx * f1) / (X + r);
+		double vx = Cross(v, n); // velocity component 
+		double tx = Cross(t, n); // distance between centres
+		double f2 = (tx - vx * f1) / (X + r);
 
 		// Check collision within bounds
 		if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -522,15 +522,15 @@ void CMyGame::flipperRcollision()
 	if (Dot(v, m) < 0) // for the left side
 	{
 		// perpendicular component (oncoming)
-		float vy = Dot(v, m); // velocity component
+		double vy = Dot(v, m); // velocity component
 		CVector d = t + (X + r) * m; // distance vector between edges
-		float dy = Dot(d, m); // perpendicular space inbetween
-		float f1 = dy / vy;
+		double dy = Dot(d, m); // perpendicular space inbetween
+		double f1 = dy / vy;
 
 		// parallel component (breadth control)
-		float vx = Cross(v, m); // velocity component 
-		float tx = Cross(t, m); // distance between centres
-		float f2 = (tx - vx * f1) / (Y + r);
+		double vx = Cross(v, m); // velocity component 
+		double tx = Cross(t, m); // distance between centres
+		double f2 = (tx - vx * f1) / (Y + r);
 		if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 		{
 			theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
@@ -541,15 +541,15 @@ void CMyGame::flipperRcollision()
 	if (Dot(v, m) > 0) // for the right side
 	{
 		// perpendicular component (oncoming)
-		float vy = Dot(v, m); // velocity component
+		double vy = Dot(v, m); // velocity component
 		CVector d = t - (X + r) * m; // distance vector between edges
-		float dy = Dot(d, m); // perpendicular space inbetween
-		float f1 = -dy / vy;
+		double dy = Dot(d, m); // perpendicular space inbetween
+		double f1 = -dy / vy;
 
 		// parallel component (breadth control)
-		float vx = Cross(v, m); // velocity component 
-		float tx = Cross(t, m); // distance between centres
-		float f2 = (tx - vx * f1) / (Y + r);
+		double vx = Cross(v, m); // velocity component 
+		double tx = Cross(t, m); // distance between centres
+		double f2 = (tx - vx * f1) / (Y + r);
 
 		// Check collision within bounds
 		if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -564,22 +564,22 @@ void CMyGame::bumpercollision()
 	
 		for each (CSprite * pBumper in theBumpers)
 		{
-			float r = theMarble.GetWidth() / 2;
-			float R = pBumper->GetWidth() / 2;
-			CVector d = theMarble.GetPos() - pBumper->GetPos();
-
-			if (d.Length() < r + R) // collision detected
+			double r = theMarble.GetWidth() / 2.0;
+			double R = pBumper->GetWidth() / 2.0;
+			CVector dvector = theMarble.GetPos() - pBumper->GetPos();
+			double d = dvector.Length() - r - R;
+			if (d <= 0) // collision detected
 			{
 				score += 10;
 				bumpersound.Play("hit.wav");
 
 				// Reflect the marble's velocity
-				CVector n = Normalize(d);
-				theMarble.SetVelocity(1.6 * Reflect(theMarble.GetVelocity(), n));
+				CVector n = Normalize(dvector);
+				theMarble.SetVelocity(1.3 * Reflect(theMarble.GetVelocity(), n));
 				// measure to reduce the ball sticking to the bumper
 				// Move the marble outside the bumper
 				
-				float overlap = (r + R) - d.Length();
+				double overlap = -d;
 				theMarble.SetPos(theMarble.GetPos() + overlap * n);
 			}
 		}
@@ -594,27 +594,27 @@ void CMyGame::bouncercollision()
 
 		{
 			
-			float r = theMarble.GetWidth() / 2;
-			float Y = pBouncer->GetHeight() / 2;
-			float X = pBouncer->GetWidth() / 2;
-			float alpha = pBouncer->GetRotation();
+			double r = theMarble.GetWidth() / 2.0;
+			double Y = pBouncer->GetHeight() / 2.0;
+			double X = pBouncer->GetWidth() / 2.0;
+			double alpha = pBouncer->GetRotation();
 			alpha = DEG2RAD(alpha);
-			CVector v = theMarble.GetVelocity() * ((float)dt / 500.f);
+			CVector v = theMarble.GetVelocity() * ((double)dt / 500.f);
 			CVector t = pBouncer->GetPos() - theMarble.GetPos();
 			CVector n = CVector(sin(alpha), cos(alpha));
 			CVector m = CVector(-cos(alpha), sin(alpha));
 			if (Dot(v, n) < 0) // for the top side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, n); // velocity component
+				double vy = Dot(v, n); // velocity component
 				CVector d = t + (Y + r) * n; // distance vector between edges
-				float dy = Dot(d, n); // perpendicular space inbetween
-				float f1 = dy / vy;
+				double dy = Dot(d, n); // perpendicular space inbetween
+				double f1 = dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, n); // velocity component 
-				float tx = Cross(t, n); // distance between centres
-				float f2 = (tx - vx * f1) / (X + r);
+				double vx = Cross(v, n); // velocity component 
+				double tx = Cross(t, n); // distance between centres
+				double f2 = (tx - vx * f1) / (X + r);
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 				{
 					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), n));
@@ -626,15 +626,15 @@ void CMyGame::bouncercollision()
 			if (Dot(v, n) > 0) // for the bottom side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, n); // velocity component
+				double vy = Dot(v, n); // velocity component
 				CVector d = t - (Y + r) * n; // distance vector between edges
-				float dy = Dot(d, n); // perpendicular space inbetween
-				float f1 = -dy / vy;
+				double dy = Dot(d, n); // perpendicular space inbetween
+				double f1 = -dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, n); // velocity component 
-				float tx = Cross(t, n); // distance between centres
-				float f2 = (tx - vx * f1) / (X + r);
+				double vx = Cross(v, n); // velocity component 
+				double tx = Cross(t, n); // distance between centres
+				double f2 = (tx - vx * f1) / (X + r);
 
 				// Check collision within bounds
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -647,15 +647,15 @@ void CMyGame::bouncercollision()
 			if (Dot(v, m) < 0) // for the left side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, m); // velocity component
+				double vy = Dot(v, m); // velocity component
 				CVector d = t + (X + r) * m; // distance vector between edges
-				float dy = Dot(d, m); // perpendicular space inbetween
-				float f1 = dy / vy;
+				double dy = Dot(d, m); // perpendicular space inbetween
+				double f1 = dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, m); // velocity component 
-				float tx = Cross(t, m); // distance between centres
-				float f2 = (tx - vx * f1) / (Y + r);
+				double vx = Cross(v, m); // velocity component 
+				double tx = Cross(t, m); // distance between centres
+				double f2 = (tx - vx * f1) / (Y + r);
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
 				{
 					theMarble.SetVelocity(1.2 * Reflect(theMarble.GetVelocity(), m));
@@ -667,15 +667,15 @@ void CMyGame::bouncercollision()
 			if (Dot(v, m) > 0) // for the right side
 			{
 				// perpendicular component (oncoming)
-				float vy = Dot(v, m); // velocity component
+				double vy = Dot(v, m); // velocity component
 				CVector d = t - (X + r) * m; // distance vector between edges
-				float dy = Dot(d, m); // perpendicular space inbetween
-				float f1 = -dy / vy;
+				double dy = Dot(d, m); // perpendicular space inbetween
+				double f1 = -dy / vy;
 
 				// parallel component (breadth control)
-				float vx = Cross(v, m); // velocity component 
-				float tx = Cross(t, m); // distance between centres
-				float f2 = (tx - vx * f1) / (Y + r);
+				double vx = Cross(v, m); // velocity component 
+				double tx = Cross(t, m); // distance between centres
+				double f2 = (tx - vx * f1) / (Y + r);
 
 				// Check collision within bounds
 				if (f1 >= 0 && f1 <= 1 && f2 >= -1 && f2 <= 1)
@@ -722,11 +722,11 @@ void CMyGame::ballmovement()
 			theMarble.Accelerate(0, 10);
 		}
 		// Limit the speed of the ball
-		float maxSpeed = 900.0f; 
+		double maxSpeed = 900.0f; 
 
 		
 		CVector velocity = theMarble.GetVelocity();
-		float speed = velocity.Length();
+		double speed = velocity.Length();
 
 		if (speed > maxSpeed)
 		{
