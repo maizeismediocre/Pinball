@@ -5,7 +5,6 @@ there may still be a bug present in the game where the ball gets stuck in a cont
 
 Assets used: 
 
-https://dribbble.com/shots/3087645-Space-Pixel-Art-Animation - background of certain ui assets
 https://www.youtube.com/watch?v=Hz6KO0gnrS8 - music 
 https://jalastram.itch.io/500-sound-effects - Sound effects
 https://souptonic.itch.io/souptonic-sfx-pack-1-ui-sounds - more sound effects (licensed under CC BY 4.0.) https://creativecommons.org/licenses/by/4.0/
