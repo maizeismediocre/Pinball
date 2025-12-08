@@ -7,4 +7,4 @@ Credits:
 
 https://www.youtube.com/watch?v=Hz6KO0gnrS8 - music 
 https://jalastram.itch.io/500-sound-effects - Sound effects
-https://souptonic.itch.io/souptonic-sfx-pack-1-ui-sounds - more sound effects (licensed under CC BY 4.0.) https://creativecommons.org/licenses/by/4.0/
+Menu sound effects from "Souptonic SFX Pack 1 - UI Sounds" by Souptonic (https://souptonic.itch.io/souptonic-sfx-pack-1-ui-sounds), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
